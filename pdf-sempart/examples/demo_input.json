@@ -1,0 +1,8 @@
+{
+  "text": [
+    {"page": 1, "bbox": [50, 100, 550, 120], "content": "Introduction", "font_size": 16, "is_bold": true},
+    {"page": 1, "bbox": [50, 130, 550, 150], "content": "This is a demo paragraph about PDF chunking.", "font_size": 12, "is_bold": false}
+  ],
+  "table": [],
+  "image": []
+}

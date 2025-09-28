@@ -1,0 +1,17 @@
+models:
+  embed_a: intfloat/e5-small-v2
+  embed_b: thenlper/gte-small
+hlda:
+  depth: 3
+  alpha: 10.0
+  gamma: 1.0
+  eta: 0.1
+  min_cf: 3
+  iters: 800
+  burn_in: 200
+merge:
+  gap_px_thresh: 16.0
+  cos_join: 0.72
+boundaries:
+  cos_thresh: 0.70
+  hell_thresh: 0.35
