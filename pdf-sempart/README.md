@@ -82,6 +82,7 @@ The lightweight test configuration uses an in-process stub for hLDA so the suite
 - `boundaries/voter.py` — 3-way voting for chunk boundaries (topic + 2 embeddings).
 - `sectionize/build.py` — Build section tree (H1/H2/H3) from headings and boundaries.
 - `pipeline/run.py` — Orchestrates the full pipeline: loading, merging, embedding, topic modeling, boundary detection, sectionization, and output.
+- `visualize/docmap_graph.py` — Produce Graphviz DOT views of DocMap sections for selected page ranges.
 
 ---
 
@@ -126,6 +127,31 @@ pytest -q
 ## Output DocMap
 
 The output is a JSON with `meta`, `sections`, and `chunks`. Each chunk contains its section path, topic node IDs, topic weight, and paragraph metadata.
+
+---
+
+## Visualization Utilities
+
+- Graphviz diagrams describing the module layout and pipeline live in `presentations/`. Render them with:
+
+  ```bash
+  dot -Tsvg presentations/pdf_sempart_module_structure.dot -o module_structure.svg
+  dot -Tsvg presentations/pdf_sempart_pipeline_flow.dot -o pipeline_flow.svg
+  ```
+
+- To inspect DocMap outputs around a page range, use `pdf_sempart.visualize.docmap_graph.generate_section_tree_dot`:
+
+  ```python
+  import json
+  from pathlib import Path
+  from pdf_sempart.visualize.docmap_graph import generate_section_tree_dot
+
+  docmap = json.loads(Path("examples/sample_doc_output.json").read_text())
+  dot_text = generate_section_tree_dot(docmap, page_start=1, page_end=2, context_pages=1)
+  Path("docmap_view.dot").write_text(dot_text)
+  ```
+
+  Then turn the DOT file into SVG/PNG via Graphviz (`dot -Tsvg docmap_view.dot -o docmap_view.svg`).
 
 ---
 
