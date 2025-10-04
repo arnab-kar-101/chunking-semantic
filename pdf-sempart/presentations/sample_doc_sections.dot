@@ -1,0 +1,36 @@
+digraph doc_sections {  graph [rankdir=LR, fontsize=12, labelloc=t, label="DocMap Sections"];  node [shape=box, fontname="Helvetica", style="filled", fillcolor="#f5f5f5"];  doc_root [label="Document", shape=oval, fillcolor="#bbdefb"];
+  subgraph cluster_page_1 {
+    label="Page 1";
+    style=dashed;
+    para_0 [label="p1: Table of Contents", shape=note, fillcolor="#fff3e0"];
+  sec_0 [label="Table of Contents", shape=folder, fillcolor="#e0f7fa"];
+  doc_root -> sec_0;
+    sec_0 -> para_0;
+    para_1 [label="p1: ## Where You Can Find More Information", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_1;
+    para_2 [label="p1: * NVIDIA X Account (https://twitter.com/nvidia) * NVIDIA Co…", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_2;
+    para_3 [label="p1: ## Forward-Looking Statements", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_3;
+    para_4 [label="p1: © 2024 NVIDIA Corporation. All rights reserved.", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_4;
+    para_5 [label="p1: In addition, investors and others can view NVIDIA videos on…", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_5;
+    para_6 [label="p1: All references to \"NVIDIA,\" \"we,\" \"us,\" \"our,\" or the \"Comp…", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_6;
+    para_7 [label="p1: Investors and others should note that we announce material …", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_7;
+    para_8 [label="p1: The information we post through these social media channels…", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_8;
+    para_9 [label="p1: This Annual Report on Form 10-K contains forward-looking st…", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_9;
+    para_10 [label="p1: In addition, statements that \"we believe\" and similar state…", shape=note, fillcolor="#fff3e0"];
+    sec_0 -> para_10;
+    para_11 [label="p1: 3", shape=note, fillcolor="#fff3e0"];
+  sec_1 [label="3", shape=folder, fillcolor="#e0f7fa"];
+  sec_2 [label="## Forward-Looking Statements", shape=folder, fillcolor="#e0f7fa"];
+  doc_root -> sec_2;
+  sec_2 -> sec_1;
+    sec_1 -> para_11;
+  }
+}
