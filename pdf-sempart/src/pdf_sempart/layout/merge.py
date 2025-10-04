@@ -1,7 +1,15 @@
-import numpy as np
 from ..layout.order import reading_order
 from typing import List
 from ..layout.blocks import Block
+
+
+def _mean(values, default):
+    return float(sum(values) / len(values)) if values else float(default)
+
+
+def _dot(a, b):
+    return sum(float(x) * float(y) for x, y in zip(a, b))
+
 
 def merge_blocks_to_paras(blocks: List[Block], encA, gap_px_thresh: float, cos_join: float):
     blocks = reading_order(blocks)
@@ -22,7 +30,7 @@ def merge_blocks_to_paras(blocks: List[Block], encA, gap_px_thresh: float, cos_j
             e_prev = encA.encode([prev_text])[0]
             e_curr = encA.encode([b.content])[0]
             ends_sentence = prev_text.strip().endswith(('.', '!', '?'))
-            if ends_sentence and np.dot(e_prev, e_curr) < cos_join:
+            if ends_sentence and _dot(e_prev, e_curr) < cos_join:
                 hard_break = True
         if hard_break:
             paras.append(cur)
@@ -44,8 +52,8 @@ def merge_blocks_to_paras(blocks: List[Block], encA, gap_px_thresh: float, cos_j
         ]
         font_sizes = [b.font_size for b in para if b.kind == 'text' and b.font_size]
         bolds = [b.is_bold for b in para if b.kind == 'text']
-        font_size_mean = float(np.mean(font_sizes)) if font_sizes else 12.0
-        bold_ratio = float(np.mean(bolds)) if bolds else 0.0
+        font_size_mean = _mean(font_sizes, 12.0)
+        bold_ratio = _mean(bolds, 0.0)
         para_objs.append(type('Para', (), {
             'text': ' '.join(texts),
             'bbox': bbox,

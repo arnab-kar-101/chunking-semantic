@@ -1,21 +1,33 @@
-import numpy as np
-from sklearn.cluster import KMeans
 from collections import defaultdict
 
+
+def _column_assignments(blocks, max_k):
+    if not blocks:
+        return {}
+    centers = [((b.bbox[0] + b.bbox[2]) / 2.0, b) for b in blocks]
+    centers.sort(key=lambda item: item[0])
+
+    xs = [c for c, _ in centers]
+    min_x, max_x = min(xs), max(xs)
+    span = max(max_x - min_x, 1.0)
+    base_gap = span / float(max(1, max_k))
+    gap_threshold = max(40.0, base_gap * 0.5)
+
+    assignments = {}
+    current_col = 0
+    prev_x = xs[0]
+    for x, block in centers:
+        if current_col < max_k - 1 and (x - prev_x) > gap_threshold:
+            current_col += 1
+        assignments[id(block)] = current_col
+        prev_x = x
+    return assignments
+
+
 def assign_columns(blocks, max_k=3):
-    xs = np.array([(b.bbox[0] + b.bbox[2]) / 2 for b in blocks]).reshape(-1, 1)
-    best_k, best_inertia, best_labels = 1, float('inf'), None
-    for k in range(1, max_k + 1):
-        kmeans = KMeans(n_clusters=k, n_init=10, random_state=42).fit(xs)
-        if kmeans.inertia_ < best_inertia:
-            best_k, best_inertia, best_labels = k, kmeans.inertia_, kmeans.labels_
-    # Remap labels by center x ascending
-    centers = [np.mean(xs[best_labels == i]) for i in range(best_k)]
-    order = np.argsort(centers)
-    col_id_map = {i: int(order[i]) for i in range(best_k)}
-    col_ids = [col_id_map[l] for l in best_labels]
-    for b, cid in zip(blocks, col_ids):
-        b.col_id = cid
+    assignments = _column_assignments(blocks, max_k)
+    for b in blocks:
+        b.col_id = assignments.get(id(b), 0)
     return blocks
 
 def reading_order(blocks):

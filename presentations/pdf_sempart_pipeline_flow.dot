@@ -1,0 +1,29 @@
+digraph pdf_sempart_pipeline_flow {
+  rankdir=LR;
+  graph [fontsize=12, labelloc=t, label="pdf_sempart document processing flow"];
+  node [shape=box, style="rounded,filled", fillcolor="#e8f0fe", fontname="Helvetica"];
+  edge [color="#1a73e8", arrowsize=0.8];
+
+  "Input JSON (dots.ocr)" -> "io.loaders.load_dict" -> "io.loaders.to_blocks" -> "layout.order.reading_order" -> "layout.merge.merge_blocks_to_paras";
+
+  "layout.merge.merge_blocks_to_paras" -> "Paragraph objects";
+  "Paragraph objects" -> {"embed.encoder_a", "embed.encoder_b", "nlp.preprocess.tokens_for", "nlp.headings.heading_level"};
+
+  "embed.encoder_a" -> "Paragraph embeddings A";
+  "embed.encoder_b" -> "Paragraph embeddings B";
+  "nlp.preprocess.tokens_for" -> "Tokens per paragraph";
+
+  "Tokens per paragraph" -> "topics.hlda.fit" -> "topics.hlda.infer" -> "Topic paths + distributions";
+
+  "Paragraph embeddings A" -> "boundaries.voter.detect_boundaries";
+  "Paragraph embeddings B" -> "boundaries.voter.detect_boundaries";
+  "Topic paths + distributions" -> "boundaries.voter.detect_boundaries";
+
+  "boundaries.voter.detect_boundaries" -> "Section boundaries";
+  "nlp.headings.heading_level" -> "Heading levels";
+
+  {"Section boundaries", "Heading levels", "Paragraph objects"} -> "sectionize.build.assemble_tree" -> "Section tree";
+  {"Paragraph objects", "Section tree", "Topic paths + distributions"} -> "Chunk assembly";
+
+  "Chunk assembly" -> "schema.build_docmap" -> "DocMap" -> "io.writer.save_json" -> "DocMap JSON output";
+}

@@ -9,7 +9,7 @@
 
 - **Input:** Dicts from [dots.ocr](https://github.com/rednote-hilab/dots.ocr): `{text|table|image}` lists with `page`, `bbox`, `content`, `font_size`, `is_bold`.
 - **Pipeline:**
-  - Multi-column reading order (KMeans)
+  - Multi-column reading order (column-gap heuristic)
   - Paragraph merging (layout + semantic continuity)
   - hLDA topic tree per document
   - Dual embeddings (E5, GTE)
@@ -57,6 +57,10 @@ python -m pdf_sempart.cli.sempart \
 
 All pipeline parameters (model IDs, thresholds, hLDA settings) are in `config/defaults.yaml`. You can override this with `--config`.
 
+### hLDA backend
+
+The lightweight test configuration uses an in-process stub for hLDA so the suite can execute without native dependencies. To run with the full tomotopy implementation install the optional `topics` extra and set `PDF_SEMPART_TOPIC_BACKEND=tomotopy` before invoking the CLI or pipeline.
+
 ---
 
 ## Module Overview
@@ -68,11 +72,11 @@ All pipeline parameters (model IDs, thresholds, hLDA settings) are in `config/de
 - `io/loaders.py` — Input validation and conversion to Block objects.
 - `io/writer.py` — Save DocMap as JSON.
 - `layout/blocks.py` — Block dataclass (text/table/image, page, bbox, etc).
-- `layout/order.py` — Multi-column detection (KMeans) and reading order logic.
+- `layout/order.py` — Multi-column detection via column-gap heuristic and reading order logic.
 - `layout/merge.py` — Merge blocks into paragraphs using layout and semantic continuity.
 - `nlp/preprocess.py` — Text normalization and tokenization.
 - `nlp/headings.py` — Heading detection and level scoring (font z-score, numbering, ALL-CAPS).
-- `topics/hlda.py` — tomotopy.HLDAModel adapter for hierarchical topic modeling.
+- `topics/hlda.py` — hLDA wrapper with optional tomotopy backend (stubbed fallback for tests).
 - `embed/encoder_a.py` — Embedding model A (default: E5-small).
 - `embed/encoder_b.py` — Embedding model B (default: GTE-small).
 - `boundaries/voter.py` — 3-way voting for chunk boundaries (topic + 2 embeddings).
@@ -87,9 +91,12 @@ All major modules have unit tests in `tests/`:
 
 - `test_order.py` — Ensures multi-column reading order is left→right, top→bottom.
 - `test_merge.py` — Checks that sentence-ending + low cosine triggers paragraph split.
-- `test_hlda.py` — Verifies hLDA trains and outputs non-empty topic paths for toy data.
 - `test_boundaries.py` — Synthetic topic/embedding sequences trigger 3-way boundary at expected indices.
+- `test_hlda.py` — Verifies the hLDA wrapper returns consistent paths/distributions.
 - `test_sectionize.py` — Numbered/bold/large fonts become H1/H2/H3 and nesting is correct.
+- `test_io.py` — Validates loader defaults and multimodal Block conversion.
+- `test_headings.py` — Spot-checks heading level detection at different font scales.
+- `test_pipeline_integration.py` — Stubs models to exercise end-to-end DocMap creation on sample input.
 
 Run all tests:
 

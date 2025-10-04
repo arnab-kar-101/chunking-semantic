@@ -1,0 +1,13 @@
+{
+  "text": [
+    {"page": 1, "bbox": [50, 80, 550, 110], "content": "1. Overview", "font_size": 18, "is_bold": true},
+    {"page": 1, "bbox": [50, 170, 550, 210], "content": "This is an introductory paragraph about the report scope.", "font_size": 12, "is_bold": false},
+    {"page": 1, "bbox": [50, 250, 550, 290], "content": "Background context continues with more detail.", "font_size": 12, "is_bold": false},
+    {"page": 1, "bbox": [300, 320, 550, 360], "content": "2. Results", "font_size": 18, "is_bold": true},
+    {"page": 1, "bbox": [300, 380, 550, 420], "content": "Key findings are summarized in this section.", "font_size": 12, "is_bold": false}
+  ],
+  "table": [
+    {"page": 2, "bbox": [60, 100, 540, 260], "content": "Sample table", "font_size": 11, "is_bold": false}
+  ],
+  "image": []
+}

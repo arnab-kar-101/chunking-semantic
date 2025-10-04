@@ -1,0 +1,95 @@
+digraph pdf_sempart_modules {
+  rankdir=LR;
+  graph [fontsize=12, labelloc=t, label="pdf_sempart module dependencies"];
+  node [shape=box, style="filled", fillcolor="#f5f5f5", fontname="Helvetica"];
+  edge [color="#555555"];
+
+  subgraph cluster_cli {
+    label="cli";
+    color="#cccccc";
+    fontname="Helvetica";
+    "cli.sempart";
+  }
+
+  subgraph cluster_pipeline {
+    label="pipeline";
+    color="#cccccc";
+    fontname="Helvetica";
+    "pipeline.run";
+  }
+
+  subgraph cluster_io {
+    label="io";
+    color="#cccccc";
+    fontname="Helvetica";
+    "io.loaders";
+    "io.writer";
+    "io.schema";
+  }
+
+  subgraph cluster_layout {
+    label="layout";
+    color="#cccccc";
+    fontname="Helvetica";
+    "layout.blocks";
+    "layout.order";
+    "layout.merge";
+  }
+
+  subgraph cluster_embed {
+    label="embed";
+    color="#cccccc";
+    fontname="Helvetica";
+    "embed.encoder_a";
+    "embed.encoder_b";
+  }
+
+  subgraph cluster_nlp {
+    label="nlp";
+    color="#cccccc";
+    fontname="Helvetica";
+    "nlp.preprocess";
+    "nlp.headings";
+  }
+
+  subgraph cluster_topics {
+    label="topics";
+    color="#cccccc";
+    fontname="Helvetica";
+    "topics.hlda";
+  }
+
+  subgraph cluster_boundaries {
+    label="boundaries";
+    color="#cccccc";
+    fontname="Helvetica";
+    "boundaries.voter";
+  }
+
+  subgraph cluster_sectionize {
+    label="sectionize";
+    color="#cccccc";
+    fontname="Helvetica";
+    "sectionize.build";
+  }
+
+  "cli.sempart" -> "pipeline.run";
+  "pipeline.run" -> {
+    "io.loaders";
+    "layout.merge";
+    "embed.encoder_a";
+    "embed.encoder_b";
+    "nlp.preprocess";
+    "nlp.headings";
+    "topics.hlda";
+    "boundaries.voter";
+    "sectionize.build";
+    "io.writer";
+    "io.schema";
+  };
+
+  "io.writer" -> "io.schema";
+  "io.loaders" -> "layout.blocks";
+  "layout.merge" -> {"layout.order", "layout.blocks"};
+  "layout.order" -> "layout.blocks";
+}
